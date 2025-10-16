@@ -2,6 +2,7 @@
 #include "rhytm_test.hpp"
 #include "lexer.hpp"
 #include "parser.hpp"
+#include "codegen.hpp"
 
 int main(int argc, char* argv[]) {
 
@@ -12,8 +13,8 @@ int main(int argc, char* argv[]) {
     std::istringstream input(xmlData);
     Lexer lexer(input);
     Parser parser(lexer);
-    
-    std::cout << parser.parseSystem().to_string();
+    CodeGenerator gen(parser.parseSystem());
+    gen.write(config.out_path);
 
     return 0;
 }

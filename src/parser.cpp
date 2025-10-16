@@ -155,7 +155,6 @@ Branch Parser::parseBranch() {
         if (currentToken == tok_p_start) {
             branch.p.push_back(parseP());
         } else {
-            // Skip anything else (text, unknown tags, etc.)
             advance();
         }
     }
