@@ -1,6 +1,7 @@
 #include <iostream>
 #include "rhytm_test.hpp"
 #include "lexer.hpp"
+#include "parser.hpp"
 
 int main(int argc, char* argv[]) {
 
@@ -10,21 +11,9 @@ int main(int argc, char* argv[]) {
 
     std::istringstream input(xmlData);
     Lexer lexer(input);
-
-    std::cout << "=== Token Stream ===\n";
-    while (true) {
-        TOKEN tok = lexer.getNextToken();
-        std::cout << "Token: " << tokenToString(tok);
-        if (tok != tok_eof) {
-            std::string text = lexer.getText();
-            if (!text.empty()) {
-                std::cout << " | Value: \"" << text << "\"";
-            }
-        }
-        std::cout << "\n";
-
-        if (tok == tok_eof) break;
-    }
+    Parser parser(lexer);
+    
+    std::cout << parser.parseSystem().to_string();
 
     return 0;
 }
