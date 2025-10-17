@@ -3,6 +3,7 @@
 
 #include "lexer.hpp"
 #include "scheme.hpp"
+#include "utils.hpp"
 #include <memory>
 #include <iostream>
 

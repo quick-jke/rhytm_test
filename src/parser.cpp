@@ -103,31 +103,43 @@ void Parser::expect(TOKEN expected) {
 }
 
 P Parser::parseP() {
-    advance(); 
+    advance();
 
     P p;
     while (true) {
         if (currentToken == tok_attr_name) {
-            p.Name = currentText;
+            p.Name = PNameEnumByString(currentText);
             advance();
         } else if (currentToken == tok_text_content) {
             std::string content = currentText;
+
             if (!content.empty() && content.front() == '[' && content.back() == ']') {
                 try {
-                    auto vec = parseIntegerArray(content);
-                    p.value = vec;
+                    p.value = parseIntegerArray(content); 
                 } catch (...) {
-                    p.value = content;
+                    p.value = content; 
                 }
-            } else {
+            }
+            else if (isDirectionFormat(content)) {
+                if (auto dirVal = tryParseDirectionValue(content)) {
+                    p.value = *dirVal;
+                } else {
+                    p.value = content; 
+                }
+            }
+            else if (auto signPair = tryParseSignPair(content)) {
+                p.value = *signPair;
+            }
+            else {
                 p.value = content;
             }
+
             advance();
         } else if (currentToken == tok_p_end) {
             advance();
             break;
         } else {
-            advance();
+            advance(); 
         }
     }
 
@@ -174,19 +186,19 @@ Block Parser::parseBlock() {
     while (true) {
         if (currentToken == tok_attr_blocktype) {
             if (currentText == "Inport"){
-                block.blockType = Inport;
+                block.blockType = enums::Inport;
             } 
             else if (currentText == "Sum") {
-                block.blockType = Sum;
+                block.blockType = enums::Sum;
             }
             else if (currentText == "Gain") {
-                block.blockType = Gain;
+                block.blockType = enums::Gain;
             }
             else if (currentText == "UnitDelay") {
-                block.blockType = UnitDelay;
+                block.blockType = enums::UnitDelay;
             }
             else if (currentText == "Outport") {
-                block.blockType = Outport;
+                block.blockType = enums::Outport;
             }
             else {
                 throw std::runtime_error("Unknown BlockType: " + currentText);

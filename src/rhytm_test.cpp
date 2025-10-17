@@ -12,9 +12,26 @@ int main(int argc, char* argv[]) {
 
     std::istringstream input(xmlData);
     Lexer lexer(input);
+
+    // std::cout << "=== Token Stream ===\n";
+    // while (true) {
+    //     TOKEN tok = lexer.getNextToken();
+    //     std::cout << "Token: " << tokenToString(tok);
+    //     if (tok != tok_eof) {
+    //         std::string text = lexer.getText();
+    //         if (!text.empty()) {
+    //             std::cout << " | Value: \"" << text << "\"";
+    //         }
+    //     }
+    //     std::cout << "\n";
+
+    //     if (tok == tok_eof) break;
+    // }
+
     Parser parser(lexer);
-    CodeGenerator gen(parser.parseSystem());
-    gen.write(config.out_path);
+    std::cout << parser.parseSystem().to_string() << std::endl;
+    // CodeGenerator gen(parser.parseSystem());
+    // gen.write(config.out_path);
 
     return 0;
 }

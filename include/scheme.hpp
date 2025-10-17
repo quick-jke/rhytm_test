@@ -1,23 +1,24 @@
 #ifndef INCLUDE_SCHEME_HPP
 #define INCLUDE_SCHEME_HPP
+
 #include <string>
 #include <variant>
 #include <vector>
 #include <sstream>
 #include "utils.hpp"
-enum BlockType{
-    Inport,
-    Sum,
-    Gain,
-    UnitDelay,
-    Outport
-};
 
-inline std::string blockTypeToString(BlockType bt);
+#include "block_type.hpp"
+#include "p_direction.hpp"
+#include "p_name.hpp"
+#include "p_direction_value.hpp"
+#include "sign_pair.hpp"
+
+
+
 
 struct P{
-    std::string Name;
-    std::variant<std::string, std::vector<int>> value;
+    enums::PName Name;
+    std::variant<PDirectionValue, SignPair, std::vector<int>, std::string> value;
 
     std::string to_string() const;
 };
@@ -34,7 +35,7 @@ struct Branch{
 };
 
 struct Block{
-    BlockType blockType;
+    enums::BlockType blockType;
     std::string Name;
     int SID;
     std::vector<P> p;
