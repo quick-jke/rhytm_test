@@ -7,6 +7,8 @@
 #include <cctype>
 #include <sstream>
 #include <queue>
+#include <iostream>
+#include <stdexcept>
 
 class Lexer {
 public:

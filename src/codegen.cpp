@@ -68,7 +68,12 @@ std::string writeAdd(Block src, std::vector<Block> deps){
 
 
 void CodeGenerator::write(const std::string& out_path){
+    std::filesystem::create_directories(std::filesystem::path(out_path).parent_path());
+
     std::ofstream file(out_path);
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open output file: " + out_path);
+    }
     auto blocks = system_.blocks;
     auto lines = system_.lines;
     std::stringstream oss;
