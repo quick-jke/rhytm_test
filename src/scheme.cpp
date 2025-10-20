@@ -112,7 +112,7 @@ std::string SignPair::to_string() const {
     std::string result;
     if (first)  result += *first;
     if (second) result += *second;
-    return "SignPair:" + result;
+    return result;
 }
 
 std::string PDirectionValue::to_string() const{

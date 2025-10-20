@@ -3,32 +3,63 @@
 #include "topological_sort.hpp"
 CodeGenerator::CodeGenerator(System system) : system_(system){}
 
-std::string writeGain(Block src, std::vector<Block> deps){
+std::string writeGain(Block src, std::vector<Block> deps) {
     std::stringstream oss;
-    oss << "\tnwocg." << removeSpaces(src.Name) << " = ";
-    for(auto const& dep : deps){
-        oss << "nwocg." << removeSpaces(dep.Name) << ", ";
-    }
-    oss << std::endl;
 
+    double mult = 1.0;
+    bool foundGain = false;
+
+    for (auto const& p : src.p) {
+        if (p.Name == enums::PGain) {
+            mult = std::stod(std::get<std::string>(p.value));
+            foundGain = true;
+            break;
+        }
+    }
+
+    oss << "\tnwocg." << removeSpaces(src.Name) << " = ";
+
+    if (deps.empty()) {
+        oss << mult;
+    } else {
+        for (size_t i = 0; i < deps.size(); ++i) {
+            if (i > 0) oss << " * ";
+            oss << "nwocg." << removeSpaces(deps[i].Name);
+        }
+        oss << " * " << mult;
+    }
+
+    oss << ";\n";
     return oss.str();
 }
 
 
 std::string writeAdd(Block src, std::vector<Block> deps){
-    std::stringstream oss;
-    oss << "\tnwocg." << removeSpaces(src.Name) << " = ";
-    for(auto const& dep : deps){
-        oss << "nwocg." << removeSpaces(dep.Name) << ", ";
-    }
-
+    SignPair pair;
+    
     for(auto const& p : src.p){
         if(p.Name == enums::PName::Inputs){
-            oss << std::get<SignPair>(p.value).to_string() << std::endl;
+            pair = std::get<SignPair>(p.value);
+        }
+    }
+
+    std::stringstream oss;
+    oss << "\tnwocg." << removeSpaces(src.Name) << " = ";
+    std::string pairStr = pair.to_string();
+    for (size_t i = 0; i < deps.size(); ++i) {
+        if (i == 0) {
+            oss << "nwocg." << removeSpaces(deps[i].Name);
+        } else {
+            if (i < pairStr.size() && pairStr[i] == '-') {
+                oss << " - nwocg." << removeSpaces(deps[i].Name);
+            } else {
+                oss << " + nwocg." << removeSpaces(deps[i].Name);
+            }
         }
     }
     
-    oss << std::endl;
+    
+    oss << ";" << std::endl;
 
 
     return oss.str();
@@ -81,7 +112,7 @@ void CodeGenerator::write(const std::string& out_path){
             case enums::BlockType::UnitDelay: {
                 oss << "\tnwocg." << removeSpaces(src.Name) << " = ";
                 for(auto const& dep : deps){
-                    oss << "nwocg." << removeSpaces(dep.Name) << ", ";
+                    oss << "nwocg." << removeSpaces(dep.Name) << ";";
                 }
                 oss << std::endl;
                 break;
@@ -95,17 +126,6 @@ void CodeGenerator::write(const std::string& out_path){
     }
     oss << "}\n";
 
-
-    // void nwocg_generated_step()
-    // {
-    //     nwocg.Add1 = nwocg.setpoint - nwocg.feedback;
-    //     nwocg.I_gain = nwocg.Add1 * 2;
-    //     nwocg.Ts = nwocg.I_gain * 0.01;
-    //     nwocg.P_gain = nwocg.Add1 * 3;
-    //     nwocg.Add2 = nwocg.Ts + nwocg.UnitDelay1;
-    //     nwocg.Add3 = nwocg.P_gain + nwocg.Add2;
-    //     nwocg.UnitDelay1 = nwocg.Add2;
-    // }
 
     // 4. ext_ports
     oss << "static const nwocg_ExtPort ext_ports[] =\n{\n";
