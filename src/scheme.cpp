@@ -1,5 +1,5 @@
 #include "scheme.hpp"
-
+// #include "topological_sort.hpp"
 
 std::string P::to_string() const {
     std::ostringstream oss;
@@ -120,29 +120,4 @@ std::string PDirectionValue::to_string() const{
     oss << "PDirectionValue{SID=" << SID << ", dir=" << PDirectionToString(dir) << ", port=" << port << "}";
     return oss.str();
 }
-
-
-std::string System::content(){
-    std::stringstream oss;
-    oss << "#include \"nwocg_run.h\"\n#include <math.h>\n";
-
-    oss << "static struct\n{\n";
-
-    for(auto const& block : blocks){
-        oss << "\tdouble " << removeSpaces(block.Name) << ";\n";
-    }
-
-    oss << "} nwocg;\n";
-
-    oss << "void nwocg_generated_init()\n{\n";
-
-    oss << "}\nvoid nwocg_generated_step()\n{\n";
-
-    oss << "}\nstatic const nwocg_ExtPort ext_ports[] =\n{\n";
-
-    oss << "};\nconst nwocg_ExtPort * const nwocg_generated_ext_ports = ext_ports;\nconst size_t nwocg_generated_ext_ports_size = sizeof(ext_ports);";
-
-    return oss.str();
-}
-
 

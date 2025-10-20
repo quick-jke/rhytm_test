@@ -3,6 +3,7 @@
 #include "lexer.hpp"
 #include "parser.hpp"
 #include "codegen.hpp"
+#include "topological_sort.hpp"
 
 int main(int argc, char* argv[]) {
 
@@ -24,14 +25,18 @@ int main(int argc, char* argv[]) {
     //         }
     //     }
     //     std::cout << "\n";
-
     //     if (tok == tok_eof) break;
     // }
 
     Parser parser(lexer);
-    std::cout << parser.parseSystem().to_string() << std::endl;
-    // CodeGenerator gen(parser.parseSystem());
-    // gen.write(config.out_path);
+    // std::cout << parser.parseSystem().to_string() << std::endl;
+    System system = parser.parseSystem();
+
+
+    CodeGenerator gen(system);
+    gen.write(config.out_path);
 
     return 0;
 }
+
+

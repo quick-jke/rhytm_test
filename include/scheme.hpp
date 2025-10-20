@@ -6,13 +6,13 @@
 #include <vector>
 #include <sstream>
 #include "utils.hpp"
+#include <unordered_map>
 
 #include "block_type.hpp"
 #include "p_direction.hpp"
 #include "p_name.hpp"
 #include "p_direction_value.hpp"
 #include "sign_pair.hpp"
-
 
 
 
@@ -57,7 +57,6 @@ struct System{
 
     std::string to_string() const;
 
-    std::string content();
 };
 
 
