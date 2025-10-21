@@ -16,3 +16,7 @@ make
 ```
 ./rhytm_test --xml_path=<path_to_xml_file.xml> --cpp_out=<output_file.h>
 ```
+## Example
+```
+./rhytm_test --xml_path=../xml/scheme.xml --cpp_out=./index.hpp
+```

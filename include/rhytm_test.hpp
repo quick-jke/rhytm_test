@@ -79,6 +79,15 @@ std::string content(const std::string& xml_path){
     const size_t nwocg_generated_ext_ports_size = sizeof(ext_ports);
 */
 
+/* 
+    17 = 16 - 18
+    25 = 17 * (2)
+    26 = 25 + (0.01)
+    19 = 17 * (3)
+    22 = 26 + 21
+    23 = 19 + 22
+    21 = 22
+*/
 
 /*
 System{blocks=[
