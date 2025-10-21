@@ -39,7 +39,7 @@ private:
 
     std::optional<std::reference_wrapper<const Block>> findBlockByIdOpt(int sid);
     std::vector<Block> findSrcIdsByDst(const std::set<simpleLine>& lines, int dst_id);
-
+    std::vector<int> topologicalOrder(std::set<simpleLine> lines);
 };
 
 #endif 

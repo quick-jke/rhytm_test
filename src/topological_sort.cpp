@@ -68,7 +68,7 @@ void printLines(std::vector<Block> blocks, std::set<simpleLine> lines){
     }
 }
 
-std::vector<int> topologicalOrder(std::set<simpleLine> lines) {
+std::vector<int> TopologicalSort::topologicalOrder(std::set<simpleLine> lines) {
     std::set<int> allNodes;
     for (const auto& e : lines) {
         allNodes.insert(e.src);
@@ -83,10 +83,11 @@ std::vector<int> topologicalOrder(std::set<simpleLine> lines) {
     }
 
     for (const auto& e : lines) {
-        // Удаляем ТОЛЬКО ребро 22 -> 21
-        if (e.src == 22 && e.dst == 21) {
+        if (findBlockByIdOpt(e.dst)->get().blockType == enums::BlockType::UnitDelay) {
             continue;
         }
+
+        
         adj[e.src].push_back(e.dst);
         inDegree[e.dst]++;
     }
@@ -111,14 +112,17 @@ std::vector<int> topologicalOrder(std::set<simpleLine> lines) {
         }
     }
 
-    // Теперь переместим UnitDelay1 (21) в конец
     std::vector<int> result;
     for (int node : order) {
-        if (node != 21) {
+        if (findBlockByIdOpt(node)->get().blockType != enums::BlockType::UnitDelay) {
             result.push_back(node);
         }
     }
-    result.push_back(21); // в конец
+    for(auto const& block : blocks_){
+        if(block.blockType == enums::BlockType::UnitDelay){
+            result.push_back(block.SID);
+        }
+    }
 
     return result;
 }
